@@ -1,0 +1,239 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Catch My Heart 💖</title><link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet"><style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: black;
+  font-family: 'Great Vibes', cursive;
+  color: white;
+}
+
+/* 🌌 Stars */
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 6px white, 0 0 15px #fff;
+  animation: floatStar linear infinite;
+}
+
+@keyframes floatStar {
+  from { transform: translateY(0); }
+  to { transform: translateY(-120vh); }
+}
+
+/* 👑 TITLE */
+.title {
+  position: absolute;
+  top: 18%;
+  width: 100%;
+  text-align: center;
+  font-size: clamp(60px, 13vw, 120px);
+  text-shadow: 0 0 10px #ff4d6d, 0 0 40px #ff4d6d;
+}
+
+/* Score & Timer */
+.score, .timer {
+  position: absolute;
+  top: 5%;
+  font-size: clamp(24px, 5vw, 35px);
+}
+.score { left: 5%; }
+.timer { right: 5%; }
+
+/* 💖 HEART */
+.heart {
+  position: absolute;
+  font-size: clamp(80px, 18vw, 120px);
+  cursor: pointer;
+  animation: fall linear forwards;
+  z-index: 10;
+}
+
+@keyframes fall {
+  from { transform: translateY(-10vh); }
+  to { transform: translateY(110vh); }
+}
+
+/* 💥 BURST */
+.particle {
+  position: absolute;
+  font-size: 25px;
+  animation: burst 0.6s forwards;
+}
+
+@keyframes burst {
+  to {
+    transform: translate(var(--x), var(--y)) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* End Screen */
+.end-screen {
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: none;
+}
+
+/* 💌 BIG MESSAGE */
+.message {
+  font-size: clamp(28px, 7vw, 50px);
+  margin-bottom: 30px;
+}
+
+/* Buttons */
+.btn {
+  display: block;
+  margin: 15px auto;
+  padding: 16px 40px;
+  font-size: clamp(20px, 5vw, 30px);
+  border-radius: 12px;
+  background: rgba(255, 77, 109, 0.15);
+  border: 1px solid #ff4d6d;
+  color: white;
+}
+</style></head><body><div class="title">Catch My Heart 💖</div>
+<div class="score">Score: 0 ❤️</div>
+<div class="timer">Time: 25</div><div class="end-screen" id="endScreen">
+  <div class="message" id="message"></div>
+  <button class="btn" onclick="restartGame()">Play Again 🔁</button>
+  <button class="btn" onclick="goNext()">There’s more… ❤️</button>
+</div><audio id="bgMusic" loop>
+  <source src="https://files.catbox.moe/ob4frw.mp4" type="audio/mp4">
+</audio><script>
+const music = document.getElementById("bgMusic");
+
+if (localStorage.getItem("musicPlaying") === "true") {
+  music.volume = 0.4;
+  music.currentTime = localStorage.getItem("musicTime") || 0;
+  music.play().catch(() => {
+    document.addEventListener("click", () => music.play(), { once: true });
+  });
+}
+
+// 🌌 Stars
+setInterval(() => {
+  let star = document.createElement("div");
+  star.className = "star";
+  let size = Math.random() * 4 + 2;
+  star.style.width = size + "px";
+  star.style.height = size + "px";
+  star.style.left = Math.random() * 100 + "vw";
+  star.style.top = "100vh";
+  star.style.animationDuration = (Math.random() * 10 + 10) + "s";
+  document.body.appendChild(star);
+  setTimeout(() => star.remove(), 20000);
+}, 200);
+
+// 🎮 GAME
+let score = 0;
+let time = 25;
+let gameEnded = false;
+
+const scoreDisplay = document.querySelector(".score");
+const timerDisplay = document.querySelector(".timer");
+const endScreen = document.getElementById("endScreen");
+const message = document.getElementById("message");
+
+function burst(x,y){
+  for(let i=0;i<8;i++){
+    let p=document.createElement("div");
+    p.className="particle";
+    p.innerHTML="💖";
+    let angle=Math.random()*360;
+    let dist=Math.random()*80;
+    p.style.left=x+"px";
+    p.style.top=y+"px";
+    p.style.setProperty("--x",Math.cos(angle)*dist+"px");
+    p.style.setProperty("--y",Math.sin(angle)*dist+"px");
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),600);
+  }
+}
+
+function spawnHeart(){
+  if(gameEnded) return;
+
+  let heart=document.createElement("div");
+  heart.className="heart";
+  heart.innerHTML="💖";
+
+  heart.style.left=Math.random()*80+"vw";
+  heart.style.animationDuration="4s";
+
+  function pop(){
+    if(gameEnded) return;
+
+    let rect=heart.getBoundingClientRect();
+    burst(rect.left,rect.top);
+
+    score++;
+    scoreDisplay.innerHTML="Score: "+score+" ❤️";
+
+    heart.remove();
+
+    // 🎯 MAX SCORE = 10
+    if(score>=10){
+      endGame(true);
+    }
+  }
+
+  heart.addEventListener("click",pop);
+  heart.addEventListener("touchstart",pop);
+
+  document.body.appendChild(heart);
+
+  setTimeout(()=>{
+    if(heart.parentNode) heart.remove();
+  },4000);
+}
+
+let spawnInterval=setInterval(spawnHeart,1200);
+
+// timer
+let timer=setInterval(()=>{
+  time--;
+  timerDisplay.innerHTML="Time: "+time;
+
+  if(time<=0){
+    endGame(false);
+  }
+},1000);
+
+// END GAME
+function endGame(maxReached){
+  if(gameEnded) return;
+
+  gameEnded=true;
+
+  clearInterval(timer);
+  clearInterval(spawnInterval);
+
+  document.querySelectorAll(".heart").forEach(h=>h.remove());
+
+  if(maxReached){
+    message.innerHTML="You didn’t just catch it… you own my heart now 👑💘";
+  } else if(score<5){
+    message.innerHTML="You missed some… but you still have me 😏";
+  } else {
+    message.innerHTML="You caught my heart… a little 💖";
+  }
+
+  endScreen.style.display="block";
+}
+
+function restartGame(){
+  location.reload();
+}
+
+function goNext(){
+  window.location.href="video.html";
+}
+</script></body>
+</html>

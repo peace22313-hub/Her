@@ -1,0 +1,155 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For My Queen 👑</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet"><style>
+body {
+  margin: 0;
+  background: black;
+  font-family: 'Playfair Display', serif;
+  overflow: hidden;
+}
+
+/* 🌌 Stars */
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 8px white, 0 0 20px #fff;
+  animation: floatStar linear infinite;
+}
+@keyframes floatStar {
+  from { transform: translateY(0); }
+  to { transform: translateY(-120vh); }
+}
+
+/* 👑 Heading */
+.title {
+  text-align: center;
+  margin-top: 30px;
+  font-size: clamp(42px, 10vw, 70px);
+  color: #ffd700;
+  text-shadow: 0 0 15px #ffd700;
+}
+
+/* 💌 Card */
+.card {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 94vw;
+  aspect-ratio: 4 / 5;
+
+  background: #ff8fa3;
+
+  border-radius: 24px;
+  padding: 30px;
+
+  box-shadow: 0 0 25px rgba(255,77,109,0.6);
+
+  overflow-y: auto;
+}
+
+/* 💌 2X BIG TEXT */
+.text {
+  font-size: 42px;       /* 🔥 FIXED BIG SIZE */
+  line-height: 2.4;
+  color: white;
+}
+
+/* Paragraph spacing */
+.text p {
+  margin-bottom: 40px;
+}
+
+/* Fade effect */
+.text p {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+.text p.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Button */
+.next-btn {
+  position: absolute;
+  bottom: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 16px 40px;
+  font-size: clamp(20px, 6vw, 28px);
+  border-radius: 14px;
+  border: none;
+  background: #ff4d6d;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 0 15px #ff4d6d;
+}
+</style></head><body><div class="title">For My Queen 👑</div><div class="card" id="box">
+  <div class="text"><p>My love 💖,</p>
+
+<p>Bohot si chije hui h in kuch dino me, and me janta hu apko me kaafi time se kuch nhi de paya. Me jayda chije nahi kr pata apke liye mujhe bohot bura lgta h, apko pyaare pyaare gift nhi de pata. Mera man bohot krta h, but paise hi nhi hote 😔. Mene bohot si chije save rakhi h ki jis din paise ayenge, apko gift karunga 🎁. Haa, lekin abhi me jayda nhi kr pata, uske liye dil se sorryy babyyy 🥺💜.</p>
+
+<p>But jo bhi krta hu, dil se or apna best deta hu 💯. Haa, utna achha nhi hu me, but bura bhi nhi hu shayad, pta nhi me kaisa hu 🤍. But itna jarur janta hu, apke liye me apna best deta rahunga, har ek chij me — pyaar me 🖤, care me 🤗, or fights me bhi 😅.</p>
+
+<p>Haa, pareshan bhi karunga, pr use bohot jyada pyaar or dhyaan bhi rakhunga 💕. Or apko khush rakhne ke liye har ek chij karunga jo me kr skta hu 💫. Apna best dunga, because you are my love, my babyyy, my everything 🥹💜.</p>
+
+<p>So bs, mene kuch banaya h apke liye, mil jayega apko next page pr 😉. Haa, and I love you dumboo 😘, and I'm soryyyy tooo 🥺🖤.</p>
+
+  </div>
+</div><button class="next-btn" onclick="goNext()">There’s something more… ❤️</button>
+
+<audio id="bgMusic" loop>
+  <source src="https://files.catbox.moe/ob4frw.mp4" type="audio/mp4">
+</audio><script>
+// Music
+const music = document.getElementById("bgMusic");
+if (localStorage.getItem("musicPlaying") === "true") {
+  music.volume = 0.4;
+  music.currentTime = localStorage.getItem("musicTime") || 0;
+  music.play().catch(() => {
+    document.addEventListener("click", () => music.play(), { once: true });
+  });
+}
+
+// Stars
+setInterval(() => {
+  let star = document.createElement("div");
+  star.className = "star";
+  let size = Math.random() * 5 + 2;
+  star.style.width = size + "px";
+  star.style.height = size + "px";
+  star.style.left = Math.random() * 100 + "vw";
+  star.style.top = "100vh";
+  star.style.animationDuration = (Math.random() * 10 + 10) + "s";
+  document.body.appendChild(star);
+  setTimeout(() => star.remove(), 20000);
+}, 200);
+
+// Fade on scroll
+const box = document.getElementById("box");
+const paragraphs = document.querySelectorAll(".text p");
+
+box.addEventListener("scroll", () => {
+  paragraphs.forEach(p => {
+    const rect = p.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 100) {
+      p.classList.add("show");
+    }
+  });
+});
+
+setTimeout(() => {
+  paragraphs.forEach(p => p.classList.add("show"));
+}, 300);
+
+// Next
+function goNext() {
+  window.location.href = "video.html";
+}
+</script></body>
+</html>

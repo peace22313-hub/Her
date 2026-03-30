@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For You 💖</title><style>
+body {
+  margin: 0;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: sans-serif;
+}
+
+/* 🌌 Stars */
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 6px white, 0 0 15px #fff;
+  animation: floatStar linear infinite;
+}
+@keyframes floatStar {
+  from { transform: translateY(0); }
+  to { transform: translateY(-120vh); }
+}
+
+/* 📦 CARD (slightly smaller height) */
+.card {
+  width: 96vw;
+  height: 78vh;   /* 👈 halka chhota */
+
+  background: #ff8fa3;
+  border-radius: 20px;
+
+  padding: 20px;
+  box-shadow: 0 0 25px rgba(255,77,109,0.5);
+
+  overflow-y: auto;
+}
+
+/* 🎥 VIDEO */
+video {
+  width: 100%;
+  border-radius: 15px;
+  margin-top: 15px;
+  box-shadow: 0 0 12px #ff4d6d;
+}
+
+/* 🔤 BIG BUTTON */
+.btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 18px;              /* 🔥 bigger */
+  border-radius: 12px;
+  border: none;
+  background: #ff4d6d;
+  color: white;
+  font-size: 22px;            /* 🔥 bigger text */
+  font-weight: bold;
+}
+
+/* 🔻 Bottom button */
+.next-btn {
+  position: fixed;
+  bottom: 20px;
+  padding: 16px 40px;
+  border-radius: 14px;
+  border: none;
+  background: #ff4d6d;
+  color: white;
+  font-size: 22px;            /* 🔥 bigger */
+  font-weight: bold;
+}
+</style></head><body><div class="card"><video id="video1" src="https://files.catbox.moe/je3tvk.mp4"></video>
+<button class="btn" onclick="playVideo('video1')">Play this moment ▶️</button>
+
+<video id="video2" src="https://files.catbox.moe/dobqbh.mp4"></video>
+<button class="btn" onclick="playVideo('video2')">Watch this ❤️</button>
+
+</div><button class="next-btn" onclick="goNext()">Memories ➡️</button>
+
+<!-- 🎧 MUSIC --><audio id="bgMusic" loop>
+  <source src="https://files.catbox.moe/ob4frw.mp4" type="audio/mp4">
+</audio><script>
+const music = document.getElementById("bgMusic");
+let currentVideo = null;
+
+// resume music
+if (localStorage.getItem("musicPlaying") === "true") {
+  music.volume = 0.4;
+  music.currentTime = localStorage.getItem("musicTime") || 0;
+
+  music.play().catch(() => {
+    document.addEventListener("click", () => music.play(), { once: true });
+  });
+
+  setInterval(() => {
+    localStorage.setItem("musicTime", music.currentTime);
+  }, 1000);
+}
+
+// stars
+setInterval(() => {
+  let star = document.createElement("div");
+  star.className = "star";
+  let size = Math.random() * 4 + 2;
+  star.style.width = size + "px";
+  star.style.height = size + "px";
+  star.style.left = Math.random() * 100 + "vw";
+  star.style.top = "100vh";
+  star.style.animationDuration = (Math.random() * 10 + 10) + "s";
+  document.body.appendChild(star);
+  setTimeout(() => star.remove(), 20000);
+}, 200);
+
+// 🎥 FIXED PLAY
+function playVideo(id) {
+  const video = document.getElementById(id);
+
+  if (currentVideo && currentVideo !== video) {
+    currentVideo.pause();
+  }
+
+  currentVideo = video;
+
+  if (!music.paused) music.pause();
+
+  video.play();
+
+  video.onended = () => {
+    music.play();
+  };
+}
+
+// next
+function goNext() {
+  window.location.href = "album.html";
+}
+</script></body>
+</html>

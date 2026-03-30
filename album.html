@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtual Memory 📖</title><style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:black;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  font-family:Georgia;
+  overflow:hidden;
+}
+
+/* ✨ STARS */
+.star{
+  position:absolute;
+  background:white;
+  border-radius:50%;
+  box-shadow:0 0 8px white, 0 0 20px #fff;
+  animation: float linear infinite;
+}
+@keyframes float{
+  from{transform:translateY(0);}
+  to{transform:translateY(-120vh);}
+}
+
+/* 📖 BOOK */
+.book{
+  width:min(100vw, calc(100vh * 4 / 5));
+  height:calc(100vw * 5 / 4);
+  max-height:100vh;
+  max-width:calc(100vh * 4 / 5);
+
+  position:relative;
+  overflow:hidden;
+  border-radius:18px;
+  box-shadow:0 0 40px rgba(0,0,0,0.9);
+  z-index:2;
+}
+
+/* 📄 PAGE */
+.page{
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:#fdf6e3;
+  transform:translateX(100%);
+  transition:0.4s;
+}
+
+.page.active{ transform:translateX(0); }
+.page.prev{ transform:translateX(-100%); }
+
+/* 📕 COVER */
+.cover{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#5c3a21;
+  color:white;
+  font-size:34px;
+}
+
+/* 📸 FRAME */
+.frame{
+  position:absolute;
+  width:38%;
+  height:45%;
+  background:white;
+  padding:8px;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.6);
+}
+
+.left{ top:8%; left:5%; }
+.right{ top:8%; right:5%; }
+
+.frame img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+/* 💬 TEXT (ALL PAGES SAFE) */
+.text{
+  position:absolute;
+  bottom:6%;      /* 👈 sab pages ke liye safe */
+  width:90%;
+  left:5%;
+  text-align:center;
+  font-size:16px;
+  color:#333;
+  line-height:1.6;
+}
+
+/* CONTROLS */
+.controls{
+  position:absolute;
+  bottom:10px;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  padding:0 15px;
+}
+
+button{
+  padding:12px 22px;
+  border:none;
+  background:#ff4d6d;
+  color:white;
+  border-radius:10px;
+}
+
+/* OUTSIDE BUTTON */
+.next-btn{
+  margin-top:12px;
+  padding:14px 28px;
+  font-size:18px;
+  border-radius:12px;
+  border:none;
+  background:#ff4d6d;
+  color:white;
+}
+</style></head><body><!-- 🎧 MUSIC --><audio id="bgMusic" loop>
+  <source src="https://files.catbox.moe/ob4frw.mp4" type="audio/mp4">
+</audio><script>
+const music = document.getElementById("bgMusic");
+window.addEventListener("click", () => {
+  music.volume = 0.4;
+  music.play();
+}, { once: true });
+</script><!-- ✨ STARS --><script>
+setInterval(()=>{
+  let star=document.createElement("div");
+  star.className="star";
+  let size=Math.random()*3+2;
+  star.style.width=size+"px";
+  star.style.height=size+"px";
+  star.style.left=Math.random()*100+"vw";
+  star.style.top="100vh";
+  star.style.animationDuration=(Math.random()*10+10)+"s";
+  document.body.appendChild(star);
+  setTimeout(()=>star.remove(),20000);
+},150);
+</script><div class="book" id="book">  <div class="page cover active">Virtual Memory 📕</div>  <!-- PAGE 1 -->  <div class="page">
+    <div class="frame left">
+      <img src="https://files.catbox.moe/qbzb64.jpg">
+    </div>
+    <div class="text">
+      One day, this distance will end… 🤍<br>
+      And I’ll finally get to hold you<br>
+      forever in my arms
+    </div>
+  </div>  <!-- PAGE 2 -->  <div class="page">
+    <div class="frame left">
+      <img src="https://files.catbox.moe/y54xow.jpg">
+    </div>
+    <div class="text">
+      Bunnyy your smile is the prettiest thing<br>
+      I ever saw 💖<br>
+      Every time I look at you,<br>
+      I fall harder and deeper
+    </div>
+  </div>  <!-- PAGE 3 -->  <div class="page">
+    <div class="frame left">
+      <img src="https://files.catbox.moe/4dbgha.jpg">
+    </div>
+    <div class="frame right">
+      <img src="https://files.catbox.moe/boltsd.jpg">
+    </div>
+    <div class="text">
+      You don't know… but all the time<br>
+      I just keep admiring you 🤍<br>
+      The way you are is rare,<br>
+      pure… and royal, Bunnyy
+    </div>
+  </div>  <!-- PAGE 4 -->  <div class="page">
+    <div class="frame left">
+      <img src="https://files.catbox.moe/87rtwo.jpg">
+    </div>
+    <div class="frame right">
+      <img src="https://files.catbox.moe/bc1zwp.jpg">
+    </div>
+    <div class="text">
+      I love you in every universe, Bunnyy 💍<br>
+      Even being far, you are closest to my heart 🤍<br>
+      I miss you in every little thing…<br>
+      every single day<br>
+      I love you so much
+    </div>
+  </div>  <div class="controls">
+    <button onclick="prev()">⬅️</button>
+    <button onclick="next()">➡️</button>
+  </div></div><button class="next-btn" onclick="goNext()">Continue 💌</button>
+
+<script>
+let pages=document.querySelectorAll(".page");
+let i=0;
+
+function update(){
+  pages.forEach((p,index)=>{
+    p.classList.remove("active","prev");
+    if(index===i) p.classList.add("active");
+    else if(index<i) p.classList.add("prev");
+  });
+}
+
+function next(){ if(i<pages.length-1){ i++; update(); } }
+function prev(){ if(i>0){ i--; update(); } }
+
+function goNext(){
+  window.location.href="k5.html";
+}
+</script></body>
+</html>

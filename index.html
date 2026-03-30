@@ -1,0 +1,135 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For My Queen 👑</title><link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet"><style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: black;
+  height: 100vh;
+  font-family: 'Great Vibes', cursive;
+}
+
+/* 👑 Title (adjusted position + bigger) */
+.title {
+  position: absolute;
+  top: 15%; /* moved slightly down */
+  width: 100%;
+  text-align: center;
+  font-size: 100px; /* bigger */
+  color: white;
+  text-shadow:
+    0 0 10px #ffd700,
+    0 0 20px #ffd700,
+    0 0 40px #ffd700,
+    0 0 80px #ffd700;
+  z-index: 10;
+}
+
+/* 💖 Button */
+.container {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.begin-btn {
+  font-size: 60px;
+  color: #ffffff;
+  cursor: pointer;
+  text-shadow:
+    0 0 10px #ff4d6d,
+    0 0 20px #ff4d6d,
+    0 0 40px #ff4d6d;
+  transition: 0.4s;
+}
+
+.begin-btn:hover {
+  transform: scale(1.1);
+  text-shadow:
+    0 0 20px #ff4d6d,
+    0 0 40px #ff4d6d,
+    0 0 80px #ff4d6d;
+}
+
+/* Fade */
+.fade-out {
+  animation: fadeOut 1s forwards;
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; }
+}
+
+/* 🌌 Stars (continuous floating, no disappearing) */
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 6px white, 0 0 15px #fff;
+  opacity: 0.9;
+  animation: floatStar linear infinite;
+}
+
+@keyframes floatStar {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-120vh);
+  }
+}
+</style></head><body><!-- 👑 Title --><div class="title">My Queen 👑</div><!-- 💖 Button --><div class="container">
+  <div class="begin-btn" onclick="startExperience()">Let’s Begin…</div>
+</div><!-- 🎧 Music --><audio id="bgMusic" loop>
+  <source src="https://files.catbox.moe/ob4frw.mp4" type="audio/mpeg">
+</audio><script>
+const music = document.getElementById("bgMusic");
+
+// 🌌 Continuous star generator
+function createStar() {
+  let star = document.createElement("div");
+  star.className = "star";
+
+  let size = Math.random() * 4 + 2;
+  star.style.width = size + "px";
+  star.style.height = size + "px";
+
+  star.style.left = Math.random() * 100 + "vw";
+  star.style.top = "100vh";
+
+  star.style.animationDuration = (Math.random() * 10 + 10) + "s";
+
+  document.body.appendChild(star);
+
+  // Remove after animation ends (so new stars keep coming)
+  setTimeout(() => {
+    star.remove();
+  }, 20000);
+}
+
+// Generate stars continuously
+setInterval(createStar, 200);
+
+// 🎧 Start
+function startExperience() {
+  music.volume = 0.5;
+  music.play();
+
+  localStorage.setItem("musicPlaying", "true");
+
+  setInterval(() => {
+    localStorage.setItem("musicTime", music.currentTime);
+  }, 1000);
+
+  document.body.classList.add("fade-out");
+
+  setTimeout(() => {
+    window.location.href = "game.html";
+  }, 1000);
+}
+</script></body>
+</html>
